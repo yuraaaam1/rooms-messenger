@@ -16,4 +16,5 @@ return [
     'max_file_size_bytes' => 100 * 1024 * 1024,
     'file_chunk_size_bytes' => 1024 * 1024,
     'file_ttl_seconds' => 24 * 60 * 60,
+    'max_json_request_size_bytes' => 64 * 1024,
 ];

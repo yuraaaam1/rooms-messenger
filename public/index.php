@@ -40,7 +40,10 @@ if ($path === '/api/room/create') {
 
     $roomRepository = new JsonRoomRepository($config['data_dir']);
     $roomService = new RoomService($roomRepository);
-    $roomController = new RoomController($roomService);
+    $roomController = new RoomController(
+        $roomService,
+        $config['max_json_request_size_bytes'],    
+    );
 
     $roomController->create();
 

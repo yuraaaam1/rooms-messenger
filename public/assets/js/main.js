@@ -1,3 +1,5 @@
+import { initializeIdentityUI } from "./identityUI.js";
+
 const statusElement = document.getElementById('app-status')
 
 async function bootApplication() {
@@ -12,6 +14,8 @@ async function bootApplication() {
             'Этот браузер не поддерживает Web Crypto API.';
         return;
     }
+
+    initializeIdentityUI();
 
     try {
         const response = await fetch('/api/health', {

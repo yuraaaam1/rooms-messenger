@@ -6,9 +6,84 @@
     <title>Messenger</title>
 </head>
 <body>
-    <main> 
+    <main>
         <h1>Messenger</h1>
         <p id="app-status" role="status">Проверка клиента...</p>
+
+        <p id="identity-feedback" role="status">
+            Формы пока не подключены.
+        </p>
+
+        <section id="identity-create-section" aria-labelledby="identity-create-title">
+            <h2 id="identity-create-title">Создание локальной идентичности</h2>
+
+            <p id="identity-create-help">
+                Личный пароль защищает ваши закрытые ключи.
+                Это не пароль комнаты.
+                Без него нельзя разблокировать сохранённые ключи.
+            </p>
+
+            <form id="identity-create-form" method="post"
+                  aria-describedby="identity-create-help">
+                <fieldset id="identity-create-fields" disabled>
+                    <legend>Данные идентичности</legend>
+
+                    <p>
+                        <label for="identity-create-nickname">Никнейм</label><br>
+                        <input id="identity-create-nickname" name="nickname"
+                               type="text" autocomplete="nickname" required>
+                    </p>
+
+                    <p>
+                        <label for="identity-create-password">Личный пароль</label><br>
+                        <input id="identity-create-password" name="password"
+                               type="password" autocomplete="new-password" required>
+                    </p>
+
+                    <p>
+                        <label for="identity-create-password-confirmation">
+                            Повторите личный пароль
+                        </label><br>
+                        <input id="identity-create-password-confirmation"
+                               name="passwordConfirmation" type="password"
+                               autocomplete="new-password" required>
+                    </p>
+
+                    <button type="submit">Создать идентичность</button>
+                </fieldset>
+            </form>
+        </section>
+
+        <section id="identity-unlock-section" hidden
+                 aria-labelledby="identity-unlock-title">
+            <h2 id="identity-unlock-title">Разблокировка локальной идентичности</h2>
+
+            <p>
+                Идентичность:
+                <span id="identity-stored-nickname"></span>
+            </p>
+
+            <form id="identity-unlock-form" method="post">
+                <fieldset id="identity-unlock-fields" disabled>
+                    <legend>Доступ к сохранённым ключам</legend>
+
+                    <p>
+                        <label for="identity-unlock-password">Личный пароль</label><br>
+                        <input id="identity-unlock-password" name="password"
+                               type="password" autocomplete="current-password" required>
+                    </p>
+
+                    <button type="submit">Разблокировать</button>
+                </fieldset>
+            </form>
+        </section>
+
+        <section id="identity-ready-section" hidden
+                 aria-labelledby="identity-ready-title">
+            <h2 id="identity-ready-title">Ключи разблокированы</h2>
+            <p>Пользователь: <span id="identity-nickname"></span></p>
+            <p>Закрытые ключи доступны для операций в памяти этой страницы.</p>
+        </section>
     </main>
 
     <script type="module" src="/assets/js/main.js"></script>

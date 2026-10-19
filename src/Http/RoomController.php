@@ -13,6 +13,7 @@ final class RoomController
 {
     public function __construct(
         private readonly RoomService $roomService,
+        private readonly int $maxJsonRequestSizeBytes,
     ) {
     }
 
@@ -54,40 +55,53 @@ final class RoomController
     private function readJsonObject(): array 
     {
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        $mediaType = strtolower(trim(explode(';', $contentType, 2)[0]));
 
-        if (!str_starts_with(strtolower($contentType), 'application/json')) {
+        if ($mediaType !== 'application/json') {
             JsonResponse::send(415, [
-                'error' => '"Content-Type" должен быть "application/json".'
+                'error' => 'Content-Type должен быть application/json.',
             ]);
         }
 
-        $rawBody = file_get_contents('php://input');
+        $rawBody = file_get_contents(
+            'php://input',
+            false,
+            null,
+            0,
+            $this->maxJsonRequestSizeBytes + 1
+        );
 
         if ($rawBody === false) {
             JsonResponse::send(400, [
-                'error' => 'Не удалось прочитать тело запроса',
+                'error' => 'Не удалось прочитать тело запроса.'
+            ]);
+        }
+
+        if (strlen($rawBody) > $this->maxJsonRequestSizeBytes) {
+            JsonResponse::send(413, [
+                'error' => 'Размер JSON-запроса превышает допустимый лимит.'
             ]);
         }
 
         try {
             $payload = json_decode(
                 $rawBody,
-                true,
+                false,
                 512,
-                JSON_THROW_ON_ERROR
+                JSON_THROW_ON_ERROR,
             );
         } catch (JsonException) {
             JsonResponse::send(400, [
-                'error' => 'Тело запроса должно содержать корректный JSON'
+                'error' => 'Тело запроса должно содержать корректный JSON.'
             ]);
         }
 
-        if (!is_array($payload) || array_is_list($payload)) {
+        if (!($payload instanceof \stdClass)) {
             JsonResponse::send(400, [
                 'error' => 'JSON должен быть объектом',
             ]);
         }
-
-        return $payload;
+        
+        return get_object_vars($payload);
     }
 }
